@@ -5,6 +5,7 @@
 * David
 * Davide
 * Thomas
+
 ## feature outline
 The game is about cells growing and changing state on a hex grid. The player has to manage the growth of cells, cells will move autonomously if the player doesn't take action. Each cell has internal state that changes based on adjacent cells.
 * Hex grid based
@@ -15,14 +16,17 @@ The game is about cells growing and changing state on a hex grid. The player has
 * images: load sprite sheets, transparency, scale, rotate, tint
 * Audio: play once, loop, pitch variation, random selection
 * Physics: minimal path finding
+
 ## platform
 * Android Tablet
+
 ## Technology
 * C++
 * OpenGLES
 * SDL2
 * SDL2_mixer
 * SDL2_image
+
 ## Risks
 * not having animation
 * simplified audio
@@ -42,13 +46,16 @@ The game is about cells growing and changing state on a hex grid. The player has
 * easy to use audio / image pipeline that doesn't require coder intervention
 
 # Implementation
+
 ## Source Control
 * Git
+
 ## Features
 * graphics manager
 * audio manager
 * game states
 * Grid
+
 ## Grid detail
 * split the grid into chunks
 * each chunk is basically an array of pointers to nodes, or nullptr if node is empty
@@ -57,7 +64,6 @@ The game is about cells growing and changing state on a hex grid. The player has
 * * if the chunk doesn't exist allocate the memory and connect it to the previous chunks
 
 There are games that already use this approach
-
 
 ## Testing Tool
 While the engine is under development it would be very valuable to have some kind of instant feedback tool for the other members of the team. Rather than having to wait to have a programmer integrate some new asset into the game they could test and iterate quickly on designs in their own time. The testing tool could show previews of animations under certain game conditions or how the hand made art would look alongside some procedural art or shader. It could also allow for the testing of audio assets, randomised events, or asset pools. 

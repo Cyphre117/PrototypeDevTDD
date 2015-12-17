@@ -266,3 +266,19 @@ The calculate fps function firstly sets up four static variables consisting of t
 * * gets touch events
 * * loads images
 * * plays audio
+ 
+| Week | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
+|------|---|---|---|---|---|---|---|---|---|----|----|----|----|----|----|----|
+Finish main engine features| x | x |
+Engine on Android|         | x | x |
+Cell generation / death    |   | x | x |
+Cell movement| | | | x |
+blood vessels| | | | x | x |
+Score system | | | |   | x | x |
+Mutations    | | | |   |   |   |   | x | x |
+Menus        | | | |   |   |   |   |   | x | x |
+Cell Energy  | | | |   |   |   |   |   |   |   | x | x |
+1 hallmark of cancer| | | | | | | |   |   |    |   | x | x |
+Bug Fixing          | | | | | | |  |   |   |   |   |   |   | x | x | x |
+
+

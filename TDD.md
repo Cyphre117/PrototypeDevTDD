@@ -4,7 +4,7 @@
 
 # Overview
 ## Concept
-The game is about cells growing and changing state on a hex grid. The player has to manage the growth of cells, cells will move autonomously if the player doesn't take action. Each cell has internal state that changes based on adjacent cells.
+The game is about cells growing and changing state. The player has to manage the growth of cells on a hex grid, cells will move autonomously if the player doesn't take action. Each cell has internal state that changes based on adjacent cells.
 
 ## Technical Goals
 The code team will be implementing the game in C++ using cross platform libraries. The code should be tailored specifically to our game, object orientated and minimal. Given the limited time the focus will be on simplicity and functionality over 'advanced' code.
@@ -12,6 +12,7 @@ The code team will be implementing the game in C++ using cross platform librarie
 ## Technical Risks
 * Not having core gameplay features implemented
 * Other members of the team being held back by slow engine progress
+* Programmers having to be assist in testing game assets
 * Could be harder to debug
 * Might not build for target platform
 * spending lots of time on engine programming, not enough time to polish
@@ -38,7 +39,7 @@ Target platform is Android Tablets. The application will be compiled and tested 
 * splash screen
 * main menu
 * optons menu
-* Touch input (single taps + drags)
+* Touch input, single touches
 * Drag navigation
 * Pinch to zoom
 * hex grid
@@ -55,6 +56,7 @@ Target platform is Android Tablets. The application will be compiled and tested 
 * animation from sprite sheets
 * randomised image selection 
 * randomised animation
+* blending between animations
 * transparency
 * colour tinting
 
@@ -68,10 +70,6 @@ Target platform is Android Tablets. The application will be compiled and tested 
 * pitch shifting
 * time shifting
 
-## platform
-* Android Tablet
-
-
 # Research
 ## Feasability
 * A team last year did it
@@ -82,14 +80,14 @@ Target platform is Android Tablets. The application will be compiled and tested 
 * Thomas is iterating on prototypes
 
 ## Challenges identified
-* easy to use audio / image pipeline that doesn't require coder intervention
+An easy to use pipeline for the visual and audio artists will be essential to ensuring fast iterations and all members of the team are able to fully bring their skills to bear on the project.
 
 # Implementation
 ## Source Control
-* Git
+We will be using Git source controll. The engine is currently stored in a private repository on Github.
 
 ## Testing Tool
-While the engine is under development it would be very valuable to have some kind of instant feedback tool for the other members of the team. Rather than having to wait to have a programmer integrate some new asset into the game they could test and iterate quickly on designs in their own time. The testing tool could show previews of animations under certain game conditions or how the hand made art would look alongside some procedural art or shader. It could also allow for the testing of audio assets, randomised events, or asset pools. 
+While the engine is under development it would be very valuable to have some kind of instant feedback tool for the other members of the team. Rather than having to wait to have a programmer to integrate some new asset into the game they could test and iterate quickly on designs in their own time. The testing tool could show previews of animations under certain game conditions or how the manually created art would look alongside some procedural art or shader. It could also allow for the testing of audio assets, randomised events, or asset pools. 
 
 ## Infinite grid
 The game will consist of a 2d hex grid which the player will be able to grow their cells across, hopefully infinitely. While it is impossible to have a truly infinite grid without infinite memory it is possible to create a game world so large that no user will conceivably reach the boundary. Game with such worlds already exist, the most popular of which is Minecraft. Minecraft's world is three dimensional, and infinite in two dimensions. The game is divided into 'chunks', each chunk being dynamically created as required and unloaded when no longer needed.
@@ -100,6 +98,7 @@ The allocating and linking of chunks of memory should be handled within a game b
 
 soruces:  
 * https://github.com/gummikana/infinite_grid.cpp
+* http://www.redblobgames.com/grids/hexagons/
  
 ## Type 3 engine on windows desktop with openGL ES
 Type3 engine was initially built as an SDL/OpenGL based technology with Visual Studio, since in the early stages of design it was not clear what platform we would be developing for. When the decision was made to create an android game, it was clear that we would have to switch the graphics API to OpenGL ES, and therefore it was of utmost importance to test whether or not our current code could be adapted for use with embedded systems or if we would have to rebuild everything from scratch. The decision was then made to create a quick test branch of the current code substituting GL initialisation code with GLES code.

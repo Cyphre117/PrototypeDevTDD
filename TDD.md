@@ -1,6 +1,7 @@
-% The Enemy Within [Working Title]
-% Technical Design Document
-% David Robertson, Thomas Hope, Davide Passaniti
+---
+title: The Enemy Within (Working Title), Technical Design Document
+author: David Robertson, Thomas Hope, Davide Passaniti
+---
 
 # Overview
 ## Concept
@@ -71,7 +72,7 @@ Target platform is Android Tablets. The application will be compiled and tested 
 * time shifting
 
 # Research
-## Feasability
+## Feasibility
 * A team last year did it
 
 ## Current Progress
@@ -84,7 +85,7 @@ An easy to use pipeline for the visual and audio artists will be essential to en
 
 # Implementation
 ## Source Control
-We will be using Git source controll. The engine is currently stored in a private repository on Github.
+We will be using Git source control. The engine is currently stored in a private repository on Github.
 
 ## Testing Tool
 While the engine is under development it would be very valuable to have some kind of instant feedback tool for the other members of the team. Rather than having to wait to have a programmer to integrate some new asset into the game they could test and iterate quickly on designs in their own time. The testing tool could show previews of animations under certain game conditions or how the manually created art would look alongside some procedural art or shader. It could also allow for the testing of audio assets, randomised events, or asset pools. 
@@ -96,7 +97,8 @@ Will likely use STL containers since they are robust and well documented, the re
 
 The allocating and linking of chunks of memory should be handled within a game board class. Callers can then use simple `set(x, y)` and `get(x, y)` functions without having to worry about the implementation. When it comes to rendering the board a check will have to be done for each chunk to see if it's on screen so only chunks that are actually visible are drawn.
 
-soruces:  
+sources:  
+
 * https://github.com/gummikana/infinite_grid.cpp
 * http://www.redblobgames.com/grids/hexagons/
  
@@ -111,39 +113,39 @@ The following is an example of the implementation:
 3. looking up the definition in `SDL_opengles2.h`, identify the types for the function's return value and input parameters (in this case `Gluint` and `void` respectively)
 4. create a typedef similar to this: 
 
-```cpp
+~~~cpp
 typedef GLuint(APIENTRY * GL_CreateProgram_Func)(void)
-```
+~~~
 
 (APIENTRY resolves to __stdcall)
 
 5. Create a variable with the function's name using the new typedef, making sure the scope is local to where the function has to be called
 
-```cpp
+~~~cpp
 GL_CreateProgram_Func glCreateProgram = NULL
-```
+~~~
 
 6. Finally, assign the function's address to the variable using
 
-```cpp
+~~~cpp
 glCreateProgram = (GL_CreateProgram_Func)SDL_GL_GetProcAddress("glCreateProgram")
-```
+~~~
 
 7. Now `glCreateProgam()` can be used as normal in that scope.
 
 This process has to be repeated for every required function.
 Since most of OpenGL's functions we were using had a GLES counterpart with the same or similar name, the engine's structure only suffered very minor changes apart from substituting GLEW includes and initialisation calls with the process described above. The only other addition worth mentioning is the need to specify a GLES context when creating the window:
 
-```cpp
+~~~cpp
 SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_ES);
 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-```
+~~~
 
 In the end we were able to have a window with a GLES context running on Windows, and the only non reusable code ended up being the few lines of test shader written in desktop hlsl.
 
 ## Compiling SDL for Android
-After confirming our technology could be adapted to the new platform, we needed to put it to practice. SDL is written in c and our engine in c++, so to compile it and run it on an android device the Native Developement Kit (NDK) has to be used.
+After confirming our technology could be adapted to the new platform, we needed to put it to practice. SDL is written in c and our engine in c++, so to compile it and run it on an android device the Native Development Kit (NDK) has to be used.
 The first step was therefore to compile the example android project provided with the SDL 2.x source. This is an Eclipse/androidSDK project that contains all the Java files required to start the application and interface with SDL's function calls and any c/c++ files the user wants to add.
 For a number of unfortunate coincidences however, this proved to be a harder task than it seemed. In fact, android sdk support for Eclipse has recently been discontinued in favor of Android Studio, which means the example project had to be ported to the new IDE unless we wanted to try and find an old version of Eclipse with androidSDK and develop in an obsolete environment. Other than the minor annoyances of changing IDE however, the biggest problem was that since Android Studio is a relatively new tool, its current NDK support is not complete and anything more than compiling a single c/c++ file with native function definitions in it requires one of the following things:
 
@@ -159,40 +161,40 @@ The following list describes the process with which we managed to get the SDL an
 3. Set the environment path variable to where the ndk folder is to be able to call build commands later on (on windows 10: control panel > system and security > system > advanced system settings > environment variables).
 4. Start android studio and choose "import project (eclipse, gradle,...)".
 5. Select the “android-project” from the SDL source folder.
-6. Copy the SDL source folder in “YourNewProject\app\src\main\jni”.
-7. Create a main.cpp file in “YourNewProject\app\src\main\jni\src” and add your code(in our test: initialise SDL, create a GLES window, draw a triangle with a shader, wait for input to quit).
+6. Copy the SDL source folder in `YourNewProject\app\src\main\jni`.
+7. Create a main.cpp file in `YourNewProject\app\src\main\jni\src` and add your code(in our test: initialise SDL, create a GLES window, draw a triangle with a shader, wait for input to quit).
 
 Then make the following changes to the following files (using api 18 for examples)
-1. YourNewProject\app\src\main\jni\Android.mk:
+1. `YourNewProject\app\src\main\jni\Android.mk`:
 add `APP_PLATFORM := android-18`
 
-2. YourNewProject\app\src\main\jni\src\Android.mk:
+2. `YourNewProject\app\src\main\jni\src\Android.mk`:
  change `yourSourceHere.c` to `main.cpp` and make sure `SDL_PATH` is the correct relative (or absolute) path to your SDL source folder
 
-3. C:\Users\<USER>\.gradle:
+3. `C:\Users\<USER>\.gradle`:
 create a file named “gradle.properties” and add `android.useDeprecatedNdk=true` in it
 
-4. YourNewProject\local.properties:
+4. `YourNewProject\local.properties`:
 add `ndk.dir=<path to your ndk folder>`
 
-5. YourNewProject\app\bulid.gradle:
+5. `YourNewProject\app\bulid.gradle`:
 change `compileSdkVersion`, `minSdkVersion` and `targetSdkVersion` to `18`
 inside defaultConfig scope add:
-```
+~~~
 ndk {
 moduleName 'main'
 }
-```
+~~~
 inside android scope add:
-```
+~~~
 sourceSets.main { 
 		jni.srcDirs = []
         	jniLibs.srcDir 'src/main/libs' 
 }
-```
+~~~
 This is where we tell gradle we don't have native code to compile by clearing the native source directories paths
 
-6. In android studio's terminal (or in the command prompt) move to YourNewProject\app\src\main\jni and run the “ndk-build” command. This will build SDL and the cpp files previously added.
+6. In android studio's terminal (or in the command prompt) move to `YourNewProject\app\src\main\jni` and run the “ndk-build” command. This will build SDL and the cpp files previously added.
 
 7. Finally, run the gradle build and start the  correct emulator (in our test a nexus5 with api 23).
 
@@ -225,7 +227,7 @@ The camera class consists of seven functions, however five of these are either �
 The final function is the update function which does the heavy lifting of the class, when called it will check if the camera needs to be updated or not. If it does it will translate the camera’s matrix to the correct position and then scale it accordingly. 
 
 #### Error Reporting
-This will simply output an error string and check for the users's input befor exiting the program.
+This will simply output an error string and check for the users's input before exiting the program.
 
 #### Input Manager
 The input manager consists of 3 functions and an unordered map. Two of the functions are very simple; they either set the value of the key to true or false in the unordered map. In doing this however, if they value of the key has not been added to the map yet, it is now added with the value it has been set to.
@@ -257,28 +259,23 @@ The `FpsLimiter` Class consists of four public functions and one private functio
 The initialisation function simply sets up the variables with base values and sets the maxFPS to the desired value.
 The set max fps function simply sets the max fps value to the value passed into the function.
 The begin function sets the start ticks value to the value returned from the `SDL_GetTicks()` function.
-The end function firstly calculates the fps by calling the calculate fps function and then gets the fram ticks by taking the start ticks value away from the current value returned by `SDL_GetTicks()`. It then checks to see if the frame ticks is less than one thousand divided by the max fps. If it is then the `SDL_Delay()` function is called and the value of one thousand divided by the max fps minus the frame ticks is sent. Finally the fps is returned.
+The end function firstly calculates the fps by calling the calculate fps function and then gets the frame ticks by taking the start ticks value away from the current value returned by `SDL_GetTicks()`. It then checks to see if the frame ticks is less than one thousand divided by the max fps. If it is then the `SDL_Delay()` function is called and the value of one thousand divided by the max fps minus the frame ticks is sent. Finally the fps is returned.
 The calculate fps function firstly sets up four static variables consisting of the number of samples, an array of frame times, the current frame and the previous ticks which is equal to the value of `SDL_GetTicks()`. The current tick is then calculated by calling `SDL_Ticks()` again and the frame time is then calculated by taking away the previous ticks from the current ticks. The modulo value of the current frame time and the number of samples is calculated and that position in the frame times array is set to the calculated frame time. The previous ticks are then set to the current ticks and the current frame is increased. A count variable is then created and if the current frame is less than the number of samples the count variable is set to the current frame, if not the count variable is set to the number of samples. The average frame time is then calculated by adding all of the used values in the frame time array together and then dividing them by the count variable. if the frame time average is above 0 the fps is set to one thousand divided by the frame time average. If not it is set to sixty.
 
 # Schedule
-* first pass engine
-* android test
-* * gets touch events
-* * loads images
-* * plays audio
  
-| Week | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
-|------|---|---|---|---|---|---|---|---|---|----|----|----|----|----|----|----|
-Finish main engine features| x | x |
-Engine on Android|         | x | x |
-Cell generation / death    |   | x | x |
-Cell movement| | | | x |
-blood vessels| | | | x | x |
+|     Week | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
+|----------|---|---|---|---|---|---|---|---|---|----|----|----|----|----|----|----|
+Finish main engine features | x | x |
+Engine on Android | | x | x |
+Cell generation / death |   | x | x |
+Cell movement | | | | x |
+blood vessels | | | | x | x |
 Score system | | | |   | x | x |
-Mutations    | | | |   |   |   |   | x | x |
-Menus        | | | |   |   |   |   |   | x | x |
-Cell Energy  | | | |   |   |   |   |   |   |   | x | x |
-1 hallmark of cancer| | | | | | | |   |   |    |   | x | x |
-Bug Fixing          | | | | | | |  |   |   |   |   |   |   | x | x | x |
+Mutations | | | |   |   |   |   | x | x |
+Menus | | | |   |   |   |   |   | x | x |
+Cell Energy | | | |   |   |   |   |   |   |   | x | x |
+1 hallmark of cancer | | | | | | | |   |   |    |   | x | x |
+Bug Fixing | | | | | | |  |   |   |   |   |   |   | x | x | x |
 
 

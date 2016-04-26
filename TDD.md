@@ -216,9 +216,13 @@ This framework will provide the following tools for game creation
 * Error reporting
 * An input manager
 * A resource manager and the loading of resources
-* A sprite class
+* A animated and regular sprite class
 * Sprite Batching
 * Timing commands
+* An audio engine
+* A way of reading a config file
+* A way to render text 
+* Buttons for UI interaction
 
 ### Design
 #### Camera Class
@@ -238,6 +242,15 @@ The resource manager consists of one function and a texture cache. The function 
 
 #### Sprite Class
 The sprite class simply contains two functions, the initialisation function which sets up all the base variables for the new sprite and loads the desired texture from the texture cache.
+
+#### Animated Sprite Class
+The Animated sprite class contains an initialisation function, four other pubic functions and a private function.
+The initialisation function takes in eleven variables, this will define the position of the sprite, its width and height, and how the animation is played.
+The draw function simply sends the data to the openGL rendering system to be rendered to the screen.
+The update function takes in the current delta time from the application and updates what frame the sprite should currently be displaying.
+The set speed function takes in a float and updates how fast the animation will play.
+The refresh function simply sets the needs refreshed boolean to true, this will make the update function reset the current frame being displayed to the first in the animation.
+The one private function updates the current UV coordinates depending on what frame needs to be displayed and rebinds the geometry.
 
 #### Sprite Batching
 * The Sprite Batching class consists of a “Glyph” struct, a “GlyphSortType” enum class, a “RenderBatch” class, five public functions and six private functions.
@@ -261,6 +274,32 @@ The set max fps function simply sets the max fps value to the value passed into 
 The begin function sets the start ticks value to the value returned from the `SDL_GetTicks()` function.
 The end function firstly calculates the fps by calling the calculate fps function and then gets the frame ticks by taking the start ticks value away from the current value returned by `SDL_GetTicks()`. It then checks to see if the frame ticks is less than one thousand divided by the max fps. If it is then the `SDL_Delay()` function is called and the value of one thousand divided by the max fps minus the frame ticks is sent. Finally the fps is returned.
 The calculate fps function firstly sets up four static variables consisting of the number of samples, an array of frame times, the current frame and the previous ticks which is equal to the value of `SDL_GetTicks()`. The current tick is then calculated by calling `SDL_Ticks()` again and the frame time is then calculated by taking away the previous ticks from the current ticks. The modulo value of the current frame time and the number of samples is calculated and that position in the frame times array is set to the calculated frame time. The previous ticks are then set to the current ticks and the current frame is increased. A count variable is then created and if the current frame is less than the number of samples the count variable is set to the current frame, if not the count variable is set to the number of samples. The average frame time is then calculated by adding all of the used values in the frame time array together and then dividing them by the count variable. if the frame time average is above 0 the fps is set to one thousand divided by the frame time average. If not it is set to sixty.
+
+#### Audio Engine
+The Audio engine class controls all of the audio in the game.
+This contains an initialisation function, a destroy function and tow loading functions. This also contatins two "friend" classes to make the division of music and sound effects easier.
+Using two "friend" classes, the audio engine will be able to load and play sound effects and music.
+the Audio engine will also contain a map of all the sound effects loaded and a map of all the music that has been loaded, this will stop any need to load sound assets during play.
+
+#### Config File
+The 'Config File' class contains 4 simple functions and uses these to get information from a designated configuration file.
+The load function simply loads the config file and stores each individual line with a "key" for accessing the information and a set of data to be stored along with the key.
+The get float function will look through the stored data for a specific float which corresdponds with the key that is passed to the function and will return the float if it exsists
+The get int function will look through the stored data for a specific integer which corresdponds with the key that is passed to the function and will return the integer if it exsists, if it doesn not exsist a default value will be assigned.
+The get string function will look through the stored data for a specific string which corresdponds with the key that is passed to the function and will return the string if it exsists
+The only private function in the config file class simply checks to see if the current line contains no information, if this is true, the line will be ignored.
+
+#### Text Renderer
+The 'Text Renderer' Class contatins an initialisation function and 5 other public functions for writing text to a screen
+The first of which is the set screen size function, this will define the width and height of the screen so that text can be written accordingly and at the right scale.
+The three following functions all perform similar tasks, these involve positioning a string, number or character, on the screen somewhere and defining the size of it.
+Finally the render function simply renders the Text that has currently been loaded and then unloads it, this allows for the text to change, any text that needs to be written again, must also be written again.
+
+#### Button
+The 'Button' Class works very similarly to a regular sprite, however it has three extra setters and two extra getters.
+The setters simply relate to the condition of the button, these are press, unpress and toggle, these all manipluate the "isPressed" boolean.
+The first of the getters is the isPressed function which simply returns the condition of the isPressed boolean.
+The other getter is the getTextUnit function which returns the GLunit containing thr information about the texture unit of the pressed sprite.  
 
 # Schedule
  

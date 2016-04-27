@@ -103,11 +103,8 @@ sources:
 * http://www.redblobgames.com/grids/hexagons/
  
 ## Type 3 engine on windows desktop with openGL ES
-Type3 engine was initially built as an SDL/OpenGL based technology with Visual Studio, since in the early stages of design it was not clear what platform we would be developing for. When the decision was made to create an android game, it was clear that we would have to switch the graphics API to OpenGL ES, and therefore it was of utmost importance to test whether or not our current code could be adapted for use with embedded systems or if we would have to rebuild everything from scratch. The decision was then made to create a quick test branch of the current code substituting GL initialisation code with GLES code.
+The following is an example implementation of how to get Type 3 Engine to run on windows using OpenGL ES:
 
-The first difficulty encountered was that the GL extension wrangler library (GLEW) used to load the API's extensions did not offer support for GLES (probably because there is no reason anyone would want to write a desktop application based on ES, apart from testing purposes), and therefore we would have to load them manually. To do this, we used SDL's `SDL_opengles2.h` header, which provides all the function definitions, macros and typedefs useful for GLES v2.x, and SDL's `SDL_GL_GetProcAddress()` function, used to grab and assign the API function pointers.
-
-The following is an example of the implementation:
 1. suppose our code requires the use of the function `glCreateProgram()`
 2. make sure  `SDL_opengles2.h` is being included in the file where we want to use the function
 3. looking up the definition in `SDL_opengles2.h`, identify the types for the function's return value and input parameters (in this case `Gluint` and `void` respectively)
@@ -133,8 +130,7 @@ glCreateProgram = (GL_CreateProgram_Func)SDL_GL_GetProcAddress("glCreateProgram"
 
 7. Now `glCreateProgam()` can be used as normal in that scope.
 
-This process has to be repeated for every required function.
-Since most of OpenGL's functions we were using had a GLES counterpart with the same or similar name, the engine's structure only suffered very minor changes apart from substituting GLEW includes and initialisation calls with the process described above. The only other addition worth mentioning is the need to specify a GLES context when creating the window:
+This process has to be repeated for every required function. Also specify a GLES context when creating the window:
 
 ~~~cpp
 SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_ES);
@@ -142,18 +138,7 @@ SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 ~~~
 
-In the end we were able to have a window with a GLES context running on Windows, and the only non reusable code ended up being the few lines of test shader written in desktop hlsl.
-
 ## Compiling SDL for Android
-After confirming our technology could be adapted to the new platform, we needed to put it to practice. SDL is written in c and our engine in c++, so to compile it and run it on an android device the Native Development Kit (NDK) has to be used.
-The first step was therefore to compile the example android project provided with the SDL 2.x source. This is an Eclipse/androidSDK project that contains all the Java files required to start the application and interface with SDL's function calls and any c/c++ files the user wants to add.
-For a number of unfortunate coincidences however, this proved to be a harder task than it seemed. In fact, android sdk support for Eclipse has recently been discontinued in favor of Android Studio, which means the example project had to be ported to the new IDE unless we wanted to try and find an old version of Eclipse with androidSDK and develop in an obsolete environment. Other than the minor annoyances of changing IDE however, the biggest problem was that since Android Studio is a relatively new tool, its current NDK support is not complete and anything more than compiling a single c/c++ file with native function definitions in it requires one of the following things:
-
-* Either downloading an experimental plugin for Gradle (the build automation system used by Android Studio) with NDK support, which is still being worked on in these months
-
-* Or tricking Gradle into thinking your project has no native code by changing the build script, and then running NDK build tools manually from the command line, effectively compiling your java project and c/c++ files in two separate steps.
-
-After spending a lot of time trying to automate the whole process with the experimental plugin and struggling with its DSL (the language use to write gradle scripts) syntax  changing week by week, we decided to temporary settle for option two.
 The following list describes the process with which we managed to get the SDL android project to run on Android Studio's emulator (Nexus 5):
 
 1. Download Android Studio, the android NDK and the SDL2 source code.
@@ -197,8 +182,6 @@ This is where we tell gradle we don't have native code to compile by clearing th
 6. In android studio's terminal (or in the command prompt) move to `YourNewProject\app\src\main\jni` and run the “ndk-build” command. This will build SDL and the cpp files previously added.
 
 7. Finally, run the gradle build and start the  correct emulator (in our test a nexus5 with api 23).
-
-With this process we were able to run an OpenGL ES shader on android without writing any Java code thanks to SDL. The downside, other than the build process being split in two steps, is that to prevent gradle from trying and failing to build our native code we cannot see our c/c++ files in android studio's project tree.
 
 ## Engine Overview
 ### Purpose

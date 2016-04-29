@@ -4,13 +4,17 @@ author: David Robertson, Thomas Hope, Davide Passaniti
 ---
 
 # Overview
+
 ## Concept
+
 The game is about cells growing and changing state. The player has to manage the growth of cells on a hex grid, cells will move autonomously if the player doesn't take action. Each cell has internal state that changes based on adjacent cells.
 
 ## Technical Goals
+
 The code team will be implementing the game in C++ using cross platform libraries. The code should be tailored specifically to our game, object orientated and minimal. Given the limited time the focus will be on simplicity and functionality over 'advanced' code.
 
 ## Technical Risks
+
 * Not having core gameplay features implemented
 * Other members of the team being held back by slow engine progress
 * Programmers having to be assist in testing game assets
@@ -21,6 +25,7 @@ The code team will be implementing the game in C++ using cross platform librarie
 * Bugs
 
 ## System Requirements
+
 Target platform is Android Tablets. The application will be compiled and tested with the AndroidSDK, NDK and android studio.
 
 Device Specifics:
@@ -31,6 +36,7 @@ Device Specifics:
 
 
 ## Technology
+
 * C++
 * OpenGLES
 * SDL2
@@ -38,12 +44,15 @@ Device Specifics:
 * SDL2_image
 
 ## Programming Team
+
 * David Robertson
 * Davide Passaniti
 * Thomas Hope
 
 # Feature List
+
 ## Technical
+
 * splash screen
 * main menu
 * optons menu
@@ -56,19 +65,24 @@ Device Specifics:
 * nodes preform checks on adjacent nodes
 * nodes change their state + spawn based on user input
 * minimal path finding / line drawing on the grid
+* interactive tutorial
+* reading data from text files
 
 ## Art
+
 * loading png images
 * static images
 * rotated / scaled images
 * animation from sprite sheets
-* randomised image selection 
-* randomised animation
 * blending between animations
 * transparency
 * colour tinting
+* programmatic drawing of the hex grid
+* user Interface
+* text rendering
 
 ## Audio
+
 * loading wav files
 * loading mp3s
 * play audio once
@@ -81,13 +95,10 @@ Device Specifics:
 # Research
 
 ## Feasibility
-* A team last year did it
 
-## Current Progress
-
-* david is working on building an engine for OpenGL
-* davide is building openGLES projects for android
-* Thomas is iterating on prototypes
+* Spoken to programmers from a team last year who wrote their own framework from scratch
+* The game concept is fairly simple and there are 3 motivated programmers
+* Online resources to aid in the creation of the basic framework
 
 ## Challenges identified
 
@@ -97,9 +108,34 @@ An easy to use pipeline for the visual and audio artists will be essential to en
 
 ## Documentation
 
+![doxygen](images/doxygen.png)
+
 In additon to the TDD extensive documentation of the source code of _Cell Cycle_ was created. The source documentation was written using specially formatted comment blocks allowing for the markup of parameters, return values, implementation and intent. These specially formatted comments were then processed using the tool [Doxygen](www.doxygen.org) which converted them to a searchable, well structured website.
 
 The generated documentation website was then hosted using [gh-pages](https://pages.github.com/), a feature provided by GitHub, and is viewable by clicking [here](http://d4v33d123.github.io/Type3Games/index.html).
+
+## Task Tracking and Assignment
+
+![trello](images/trello.png)
+
+The programming team's tasks were tracked using a group Trello board. The board was organised around five lists, each with a specific function
+
+1. Backlog: When anyone comes up with an idea it goes here, no matter how crazy or ambitious it is or who thought of it
+2. Planned: These are the features that have been agreed on _as a group_, things only go in planned when the group is commited to completing them
+3. Doing: Each member of the team should have one, and no more, cards in doing at a time. They update the card with notes and checklists as they make progress
+4. Ready for Signoff: When a assignee _thinks_ they are finished, they put it here
+5. Done: Tasks only more from Ready for Signoff to Done when _the group_ agrees they are done. Often what will happen is the group will review the result and ask for some changes to be made, the task will be given a modified or more specific definition and moved back to planned.
+
+Ensuing this method is effective requires enforcing a few rules about how people interact with the board. Importantly tasks only move from Backlog to Planned, or Ready for Signoff to Done with the approval of _at least_ two people. Preferably the entire group would be present.
+
+The title of each card should describe a user story, i.e. something that represent value to the _end user_. User stories are often written using the format: `As a [user] I want [feature] so I can [reason]`
+
+* "background audio" becomes "as a sound artist i want to test background music so I can see how it affects the atmosphere"
+* "have a grid structure to put cells in" becomes "As a player I want to place cells so I can grow my creature"
+
+The description of each card should include a _definiton of done_. A definiton of done usually takes the form `Done when [descripton]`. Each card should have a sentence or set of criteria that is true when the user story has been fulfiled. A user story for animation could have a definiton of done as:
+
+* "Done when cells have animations for idle, dividing and mutating, and these animations are triggered automaticaly according to the cells internal state"
 
 ## Source Control
 
@@ -107,11 +143,23 @@ We will be using Git source control. The engine is currently stored in a private
 
 A log of commits can be generated by navigating to the repository and executing `git log --pretty=short --graph > log.txt` in a terminal session.
 
+## Bug Tracking
+
+![git issues](images/gitissues.png)
+
+When bugs are found they are added to the issue tracker associated with the repository on Github. As much information as possible about the bug should be included e.g. which platforms the bug exists on, conditions to reproduce the bug, already investigated solutions, and potetial lines of enquiry.
+
+Generaly when a member of the team comes across a bug they would first spend some time investigating it themselves. Then if at some point they decide there are more pressing matters to move onto or progress slows they would post an issue on github describing what they had learned up to that point.
+
 ## Testing Tool
+
+_Update 2016-04:_ The testing tool does not currently exist as a standalone tool, but some of the motives for creating such a tool were satisfied following the implementation of the `ConfigFile()` class.
 
 While the engine is under development it would be very valuable to have some kind of instant feedback tool for the other members of the team. Rather than having to wait to have a programmer to integrate some new asset into the game they could test and iterate quickly on designs in their own time. The testing tool could show previews of animations under certain game conditions or how the manually created art would look alongside some procedural art or shader. It could also allow for the testing of audio assets, randomised events, or asset pools. 
 
 ## Infinite grid
+
+_Update 2016-04:_ This feature was considered not necessary for the prototype and shelved to be revisited at a later date.
 
 The game will consist of a 2d hex grid which the player will be able to grow their cells across, hopefully infinitely. While it is impossible to have a truly infinite grid without infinite memory it is possible to create a game world so large that no user will conceivably reach the boundary. Game with such worlds already exist, the most popular of which is Minecraft. Minecraft's world is three dimensional, and infinite in two dimensions. The game is divided into 'chunks', each chunk being dynamically created as required and unloaded when no longer needed.
 
